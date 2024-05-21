@@ -16,7 +16,7 @@ const (
 	ASTERISK = "*"
 	SLASH    = "/"
 
-	EQ = "=="
+	EQ     = "=="
 	NOT_EQ = "!="
 
 	LT = "<"
@@ -53,7 +53,7 @@ var keywords = map[string]TokenType{
 	"let":    LET,
 	"true":   TRUE,
 	"false":  FALSE,
-  "if":     IF,
+	"if":     IF,
 	"else":   ELSE,
 	"return": RETURN,
 }
