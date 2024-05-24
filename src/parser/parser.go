@@ -2,7 +2,6 @@ package parser
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/ZeroBl21/go-monkey/src/ast"
 	"github.com/ZeroBl21/go-monkey/src/lexer"
@@ -48,21 +47,12 @@ func New(l *lexer.Lexer) *Parser {
 		infixParseFn:  map[token.TokenType]infixParseFn{},
 	}
 
-	p.registerPrefix(token.IDENT, p.parseIdentifier)
-	p.registerPrefix(token.INT, p.parseIntegerLiteral)
+	p.createTokenHandlers()
 
 	p.nextToken()
 	p.nextToken()
 
 	return p
-}
-
-func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
-	p.prefixParseFn[tokenType] = fn
-}
-
-func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
-	p.infixParseFn[tokenType] = fn
 }
 
 func (p *Parser) Errors() []string {
@@ -88,112 +78,6 @@ func (p *Parser) ParseProgram() *ast.Program {
 	}
 
 	return program
-}
-
-func (p *Parser) parseStatement() ast.Statement {
-	switch p.curToken.Type {
-	case token.LET:
-		return p.parseLetStatement()
-	case token.RETURN:
-		return p.parseReturnStatement()
-	default:
-		return p.parseExpressionStatement()
-	}
-}
-
-func (p *Parser) parseLetStatement() *ast.LetStatement {
-	stmt := &ast.LetStatement{
-		Token: p.curToken,
-		Name:  &ast.Identifier{},
-		Value: nil,
-	}
-
-	if !p.expectPeek(token.IDENT) {
-		return nil
-	}
-
-	stmt.Name = &ast.Identifier{
-		Token: p.curToken,
-		Value: p.curToken.Literal,
-	}
-
-	if !p.expectPeek(token.ASSIGN) {
-		return nil
-	}
-
-	// TODO: We're skipping the expressions until we encounter a semicolon
-	for !p.curTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
-
-	return stmt
-}
-
-func (p *Parser) parseReturnStatement() *ast.ReturnStatement {
-	stmt := &ast.ReturnStatement{
-		Token:       p.curToken,
-		ReturnValue: nil,
-	}
-
-	p.nextToken()
-
-	// TODO: We're skipping the expressions until we encounter a semicolon
-	for !p.curTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
-
-	return stmt
-}
-
-func (p *Parser) parseExpressionStatement() *ast.ExpressionStatement {
-	stmt := &ast.ExpressionStatement{
-		Token:      p.curToken,
-		Expression: p.parseExpression(LOWEST),
-	}
-
-	for p.peekTokenIs(token.SEMICOLON) {
-		p.nextToken()
-	}
-
-	return stmt
-}
-
-// TODO: Handle expression precedence
-func (p *Parser) parseExpression(_ BindingPower) ast.Expression {
-	prefix := p.prefixParseFn[p.curToken.Type]
-	if prefix == nil {
-		p.handlerError(p.curToken.Type)
-		return nil
-	}
-
-	leftExp := prefix()
-
-	return leftExp
-}
-
-func (p *Parser) parseIdentifier() ast.Expression {
-	return &ast.Identifier{
-		Token: p.curToken,
-		Value: p.curToken.Literal,
-	}
-}
-
-func (p *Parser) parseIntegerLiteral() ast.Expression {
-	lit := &ast.IntegerLiteral{
-		Token: p.curToken,
-		Value: 0,
-	}
-
-	value, err := strconv.ParseInt(p.curToken.Literal, 0, 64)
-	if err != nil {
-		msg := fmt.Sprintf("could not parse %q as integer", p.curToken.Literal)
-		p.errors = append(p.errors, msg)
-		return nil
-	}
-
-	lit.Value = value
-
-	return lit
 }
 
 func (p *Parser) curTokenIs(t token.TokenType) bool {
