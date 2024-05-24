@@ -103,6 +103,8 @@ func (s *ExpressionStatement) String() string {
 	return ""
 }
 
+//
+
 type Identifier struct {
 	Token token.Token // The 'Return' token
 	Value string
@@ -120,3 +122,22 @@ type IntegerLiteral struct {
 func (l *IntegerLiteral) expressionNode()      {}
 func (l *IntegerLiteral) TokenLiteral() string { return l.Token.Literal }
 func (l *IntegerLiteral) String() string       { return l.Token.Literal }
+
+type PrefixExpression struct {
+	Token    token.Token
+	Operator string
+	Right    Expression
+}
+
+func (e *PrefixExpression) expressionNode()      {}
+func (e *PrefixExpression) TokenLiteral() string { return e.Token.Literal }
+func (e *PrefixExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("(")
+	out.WriteString(e.Operator)
+	out.WriteString(e.Right.String())
+	out.WriteString(")")
+
+	return out.String()
+}

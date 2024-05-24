@@ -5,13 +5,27 @@ import (
 	"strconv"
 
 	"github.com/ZeroBl21/go-monkey/src/ast"
+	"github.com/ZeroBl21/go-monkey/src/token"
+)
+
+type BindingPower int
+
+const (
+	_ BindingPower = iota
+	LOWEST
+	EQUALS       // ==
+	LESS_GREATER // > or <
+	SUM          // +
+	PRODUCT      // *
+	PREFIX       // -X or !X
+	CALL         // myFunction(X)
 )
 
 // TODO: Handle expression precedence
 func (p *Parser) parseExpression(_ BindingPower) ast.Expression {
 	prefix := p.prefixParseFn[p.curToken.Type]
 	if prefix == nil {
-		p.handlerError(p.curToken.Type)
+		p.noPrefixParseFn(p.curToken.Type)
 		return nil
 	}
 
@@ -43,4 +57,23 @@ func (p *Parser) parseIntegerLiteral() ast.Expression {
 	lit.Value = value
 
 	return lit
+}
+
+func (p *Parser) parsePrefixExpression() ast.Expression {
+	expression := &ast.PrefixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Right:    nil,
+	}
+
+	p.nextToken()
+
+	expression.Right = p.parseExpression(PREFIX)
+
+	return expression
+}
+
+func (p *Parser) noPrefixParseFn(t token.TokenType) {
+	msg := fmt.Sprintf("No prefix parse function for token %s found", t)
+	p.errors = append(p.errors, msg)
 }

@@ -8,19 +8,6 @@ import (
 	"github.com/ZeroBl21/go-monkey/src/token"
 )
 
-type BindingPower int
-
-const (
-	_ BindingPower = iota
-	LOWEST
-	EQUALS       // ==
-	LESS_GREATER // > or <
-	SUM          // +
-	PRODUCT      // *
-	PREFIX       // -X or !X
-	CALL         // myFunction(X)
-)
-
 type (
 	prefixParseFn func() ast.Expression
 	infixParseFn  func(ast.Expression) ast.Expression
@@ -102,10 +89,5 @@ func (p *Parser) expectPeek(t token.TokenType) bool {
 func (p *Parser) peekError(t token.TokenType) {
 	msg := fmt.Sprintf("expected next token to be %s, got %s instead",
 		t, p.peekToken.Type)
-	p.errors = append(p.errors, msg)
-}
-
-func (p *Parser) handlerError(t token.TokenType) {
-	msg := fmt.Sprintf("Expected handler for token %s\n", t)
 	p.errors = append(p.errors, msg)
 }
