@@ -20,8 +20,8 @@ type Parser struct {
 	curToken  token.Token
 	peekToken token.Token
 
-	prefixParseFn map[token.TokenType]prefixParseFn
-	infixParseFn  map[token.TokenType]infixParseFn
+	prefixParseFns map[token.TokenType]prefixParseFn
+	infixParseFns  map[token.TokenType]infixParseFn
 }
 
 func New(l *lexer.Lexer) *Parser {
@@ -30,8 +30,8 @@ func New(l *lexer.Lexer) *Parser {
 		errors:        []string{},
 		curToken:      token.Token{},
 		peekToken:     token.Token{},
-		prefixParseFn: map[token.TokenType]prefixParseFn{},
-		infixParseFn:  map[token.TokenType]infixParseFn{},
+		prefixParseFns: map[token.TokenType]prefixParseFn{},
+		infixParseFns:  map[token.TokenType]infixParseFn{},
 	}
 
 	p.createTokenHandlers()

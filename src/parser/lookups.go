@@ -3,11 +3,11 @@ package parser
 import "github.com/ZeroBl21/go-monkey/src/token"
 
 func (p *Parser) registerPrefix(tokenType token.TokenType, fn prefixParseFn) {
-	p.prefixParseFn[tokenType] = fn
+	p.prefixParseFns[tokenType] = fn
 }
 
 func (p *Parser) registerInfix(tokenType token.TokenType, fn infixParseFn) {
-	p.infixParseFn[tokenType] = fn
+	p.infixParseFns[tokenType] = fn
 }
 
 func (p *Parser) createTokenHandlers() {
