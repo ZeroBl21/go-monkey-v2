@@ -21,7 +21,7 @@ const (
 	CALL         // myFunction(X)
 )
 
-var precedence = map[token.TokenType]BindingPower{
+var precedences = map[token.TokenType]BindingPower{
 	token.EQ:       EQUALS,
 	token.NOT_EQ:   EQUALS,
 	token.LT:       LESS_GREATER,
@@ -33,15 +33,15 @@ var precedence = map[token.TokenType]BindingPower{
 }
 
 func (p *Parser) parseExpression(precedence BindingPower) ast.Expression {
-	prefix := p.prefixParseFn[p.curToken.Type]
+	prefix := p.prefixParseFns[p.curToken.Type]
 	if prefix == nil {
 		p.noPrefixParseFn(p.curToken.Type)
 		return nil
 	}
 	leftExp := prefix()
 
-	if !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
-		infix := p.infixParseFn[p.peekToken.Type]
+	for !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+		infix := p.infixParseFns[p.peekToken.Type]
 		if infix == nil {
 			return leftExp
 		}
@@ -113,7 +113,7 @@ func (p *Parser) noPrefixParseFn(t token.TokenType) {
 }
 
 func (p *Parser) peekPrecedence() BindingPower {
-	if p, ok := precedence[p.peekToken.Type]; ok {
+	if p, ok := precedences[p.peekToken.Type]; ok {
 		return p
 	}
 
@@ -121,7 +121,7 @@ func (p *Parser) peekPrecedence() BindingPower {
 }
 
 func (p *Parser) curPrecedence() BindingPower {
-	if p, ok := precedence[p.curToken.Type]; ok {
+	if p, ok := precedences[p.curToken.Type]; ok {
 		return p
 	}
 
