@@ -21,15 +21,35 @@ const (
 	CALL         // myFunction(X)
 )
 
-// TODO: Handle expression precedence
-func (p *Parser) parseExpression(_ BindingPower) ast.Expression {
+var precedence = map[token.TokenType]BindingPower{
+	token.EQ:       EQUALS,
+	token.NOT_EQ:   EQUALS,
+	token.LT:       LESS_GREATER,
+	token.RT:       LESS_GREATER,
+	token.PLUS:     SUM,
+	token.MINUS:    SUM,
+	token.SLASH:    PRODUCT,
+	token.ASTERISK: PRODUCT,
+}
+
+func (p *Parser) parseExpression(precedence BindingPower) ast.Expression {
 	prefix := p.prefixParseFn[p.curToken.Type]
 	if prefix == nil {
 		p.noPrefixParseFn(p.curToken.Type)
 		return nil
 	}
-
 	leftExp := prefix()
+
+	if !p.peekTokenIs(token.SEMICOLON) && precedence < p.peekPrecedence() {
+		infix := p.infixParseFn[p.peekToken.Type]
+		if infix == nil {
+			return leftExp
+		}
+
+		p.nextToken()
+
+		leftExp = infix(leftExp)
+	}
 
 	return leftExp
 }
@@ -73,7 +93,37 @@ func (p *Parser) parsePrefixExpression() ast.Expression {
 	return expression
 }
 
+func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
+	expression := &ast.InfixExpression{
+		Token:    p.curToken,
+		Operator: p.curToken.Literal,
+		Left:     left,
+	}
+
+	precedence := p.curPrecedence()
+	p.nextToken()
+	expression.Right = p.parseExpression(precedence)
+
+	return expression
+}
+
 func (p *Parser) noPrefixParseFn(t token.TokenType) {
 	msg := fmt.Sprintf("No prefix parse function for token %s found", t)
 	p.errors = append(p.errors, msg)
+}
+
+func (p *Parser) peekPrecedence() BindingPower {
+	if p, ok := precedence[p.peekToken.Type]; ok {
+		return p
+	}
+
+	return LOWEST
+}
+
+func (p *Parser) curPrecedence() BindingPower {
+	if p, ok := precedence[p.curToken.Type]; ok {
+		return p
+	}
+
+	return LOWEST
 }
