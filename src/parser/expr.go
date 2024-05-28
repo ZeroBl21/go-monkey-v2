@@ -114,6 +114,17 @@ func (p *Parser) parseInfixExpression(left ast.Expression) ast.Expression {
 	return expression
 }
 
+func (p *Parser) parseGroupingExpression() ast.Expression {
+	p.nextToken()
+
+	exp := p.parseExpression(LOWEST)
+	if !p.expectPeek(token.RPAREN) {
+		return nil
+	}
+
+	return exp
+}
+
 func (p *Parser) noPrefixParseFn(t token.TokenType) {
 	msg := fmt.Sprintf("No prefix parse function for token %s found", t)
 	p.errors = append(p.errors, msg)
