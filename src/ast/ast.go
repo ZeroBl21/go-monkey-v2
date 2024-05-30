@@ -103,6 +103,23 @@ func (s *ExpressionStatement) String() string {
 	return ""
 }
 
+type BlockStatement struct {
+	Token      token.Token // The { Token
+	Statements []Statement
+}
+
+func (s *BlockStatement) statementNode()       {}
+func (s *BlockStatement) TokenLiteral() string { return s.Token.Literal }
+func (s *BlockStatement) String() string {
+	var out bytes.Buffer
+
+	for _, s := range s.Statements {
+		out.WriteString(s.String())
+	}
+
+	return out.String()
+}
+
 //
 
 type Identifier struct {
@@ -168,6 +185,31 @@ func (e *InfixExpression) String() string {
 	out.WriteString(" " + e.Operator + " ")
 	out.WriteString(e.Right.String())
 	out.WriteString(")")
+
+	return out.String()
+}
+
+type IfExpression struct {
+	Token       token.Token // The 'if' token
+	Condition   Expression
+	Consequence *BlockStatement
+	Alternative *BlockStatement
+}
+
+func (e *IfExpression) expressionNode()      {}
+func (e *IfExpression) TokenLiteral() string { return e.Token.Literal }
+func (e *IfExpression) String() string {
+	var out bytes.Buffer
+
+	out.WriteString("if")
+	out.WriteString(e.Condition.String())
+	out.WriteString(" ")
+	out.WriteString(e.Consequence.String())
+
+	if e.Alternative != nil {
+		out.WriteString("else ")
+		out.WriteString(e.Alternative.String())
+	}
 
 	return out.String()
 }
