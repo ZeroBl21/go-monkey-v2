@@ -2,6 +2,7 @@ package ast
 
 import (
 	"bytes"
+	"strings"
 
 	"github.com/ZeroBl21/go-monkey/src/token"
 )
@@ -148,6 +149,31 @@ type Boolean struct {
 func (l *Boolean) expressionNode()      {}
 func (l *Boolean) TokenLiteral() string { return l.Token.Literal }
 func (l *Boolean) String() string       { return l.Token.Literal }
+
+type FunctionLiteral struct {
+	Token      token.Token // The 'fn' token
+	Parameters []*Identifier
+	Body       *BlockStatement
+}
+
+func (l *FunctionLiteral) expressionNode()      {}
+func (l *FunctionLiteral) TokenLiteral() string { return l.Token.Literal }
+func (l *FunctionLiteral) String() string {
+	var out bytes.Buffer
+
+	params := []string{}
+	for _, p := range l.Parameters {
+		params = append(params, p.String())
+	}
+
+	out.WriteString(l.TokenLiteral())
+	out.WriteString("(")
+	out.WriteString(strings.Join(params, ", "))
+	out.WriteString(")")
+	out.WriteString(l.Body.String())
+
+	return l.Token.Literal
+}
 
 type PrefixExpression struct {
 	Token    token.Token
