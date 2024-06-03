@@ -12,6 +12,7 @@ import (
 
 const (
 	RESET  = "\033[0m"
+	YELLOW = "\033[33m"
 	BLUE   = "\033[34m"
 	PROMPT = BLUE + ">> " + RESET
 )
@@ -38,7 +39,7 @@ func Start(in io.Reader, out io.Writer) {
 
 		evaluated := evaluator.Eval(program)
 		if evaluated != nil {
-			io.WriteString(out, evaluated.Inspect())
+			io.WriteString(out, YELLOW+evaluated.Inspect()+RESET)
 			io.WriteString(out, "\n")
 		}
 	}
