@@ -5,9 +5,10 @@ import "fmt"
 type ObjectType string
 
 const (
-	INTEGER_OBJ ObjectType = "INTEGER"
-	BOOLEAN_OBJ ObjectType = "BOOLEAN"
-	NULL_OBJ    ObjectType = "NULL"
+	INTEGER_OBJ      ObjectType = "INTEGER"
+	BOOLEAN_OBJ      ObjectType = "BOOLEAN"
+	RETURN_VALUE_OBJ ObjectType = "RETURN_VALUE"
+	NULL_OBJ         ObjectType = "NULL"
 )
 
 type Object interface {
@@ -15,23 +16,30 @@ type Object interface {
 	Inspect() string
 }
 
+type Null struct {
+	Value bool
+}
+
+func (o *Null) Type() ObjectType { return NULL_OBJ }
+func (o *Null) Inspect() string  { return "null" }
+
 type Integer struct {
 	Value int64
 }
 
-func (i *Integer) Type() ObjectType { return INTEGER_OBJ }
-func (i *Integer) Inspect() string  { return fmt.Sprintf("%d", i.Value) }
+func (o *Integer) Type() ObjectType { return INTEGER_OBJ }
+func (o *Integer) Inspect() string  { return fmt.Sprintf("%d", o.Value) }
 
 type Boolean struct {
 	Value bool
 }
 
-func (i *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
-func (i *Boolean) Inspect() string  { return fmt.Sprintf("%t", i.Value) }
+func (o *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
+func (o *Boolean) Inspect() string  { return fmt.Sprintf("%t", o.Value) }
 
-type Null struct {
-	Value bool
+type ReturnValue struct {
+	Value Object
 }
 
-func (i *Null) Type() ObjectType { return NULL_OBJ }
-func (i *Null) Inspect() string  { return "null" }
+func (o *ReturnValue) Type() ObjectType { return RETURN_VALUE_OBJ }
+func (o *ReturnValue) Inspect() string  { return o.Value.Inspect() }
