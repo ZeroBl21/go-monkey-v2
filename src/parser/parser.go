@@ -26,10 +26,10 @@ type Parser struct {
 
 func New(l *lexer.Lexer) *Parser {
 	p := &Parser{
-		l:             l,
-		errors:        []string{},
-		curToken:      token.Token{},
-		peekToken:     token.Token{},
+		l:              l,
+		errors:         []string{},
+		curToken:       token.Token{},
+		peekToken:      token.Token{},
 		prefixParseFns: map[token.TokenType]prefixParseFn{},
 		infixParseFns:  map[token.TokenType]infixParseFn{},
 	}
