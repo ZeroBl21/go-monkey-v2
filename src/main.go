@@ -1,6 +1,7 @@
 package main
 
 import (
+	"flag"
 	"fmt"
 	"os"
 	"os/user"
@@ -9,6 +10,20 @@ import (
 )
 
 func main() {
+	fileFlag := flag.String("file", "", "Path to a file to be evaluated")
+	flag.Parse()
+
+	if *fileFlag != "" {
+		data, err := os.ReadFile(*fileFlag)
+		if err != nil {
+			fmt.Fprintln(os.Stderr, "Error reading file:", err)
+			return
+		}
+		repl.Evaluate(string(data), os.Stdout)
+
+		return
+	}
+
 	user, err := user.Current()
 	if err != nil {
 		panic(err)
