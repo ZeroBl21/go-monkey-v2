@@ -1,6 +1,10 @@
 package lexer
 
-import "github.com/ZeroBl21/go-monkey/src/token"
+import (
+	"errors"
+
+	"github.com/ZeroBl21/go-monkey/src/token"
+)
 
 type Lexer struct {
 	input        string
@@ -62,8 +66,14 @@ func (l *Lexer) NextToken() token.Token {
 
 	// Identifiers + literals
 	case '"':
-		tok.Type = token.STRING
-		tok.Literal = l.readString()
+		str, err := l.readString()
+		if err != nil {
+			tok.Type = token.ILLEGAL
+			tok.Literal = err.Error()
+		} else {
+			tok.Type = token.STRING
+			tok.Literal = str
+		}
 
 	// Operators
 	case '+':
@@ -148,16 +158,20 @@ func isLetter(ch byte) bool {
 	return 'a' <= ch && ch <= 'z' || 'A' <= ch && ch <= 'Z' || ch == '_'
 }
 
-func (l *Lexer) readString() string {
+func (l *Lexer) readString() (string, error) {
 	position := l.position + 1
 	for {
 		l.readChar()
-		if l.ch == '"' || l.ch == 0 {
+		if l.ch == '"' {
 			break
+		}
+
+		if l.ch == 0 {
+			return "", errors.New("unterminated string")
 		}
 	}
 
-	return l.input[position:l.position]
+	return l.input[position:l.position], nil
 }
 
 func (l *Lexer) readNumber() string {
