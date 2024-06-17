@@ -30,20 +30,29 @@ func Start(in io.Reader, out io.Writer) {
 		}
 
 		line := scanner.Text()
-		l := lexer.New(line)
-		p := parser.New(l)
+		EvaluateLine(line, out, env)
+	}
+}
 
-		program := p.ParseProgram()
-		if len(p.Errors()) != 0 {
-			printParserErrors(out, p.Errors())
-			continue
-		}
+func Evaluate(input string, out io.Writer) {
+	env := object.NewEnvironment()
+	EvaluateLine(input, out, env)
+}
 
-		evaluated := evaluator.Eval(program, env)
-		if evaluated != nil {
-			io.WriteString(out, YELLOW+evaluated.Inspect()+RESET)
-			io.WriteString(out, "\n")
-		}
+func EvaluateLine(line string, out io.Writer, env *object.Environment) {
+	l := lexer.New(line)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		printParserErrors(out, p.Errors())
+		return
+	}
+
+	evaluated := evaluator.Eval(program, env)
+	if evaluated != nil {
+		io.WriteString(out, YELLOW+evaluated.Inspect()+RESET)
+		io.WriteString(out, "\n")
 	}
 }
 
