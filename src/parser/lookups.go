@@ -19,6 +19,7 @@ func (p *Parser) createTokenHandlers() {
 	p.registerPrefix(token.FALSE, p.parseBoolean)
 	p.registerPrefix(token.FUNCTION, p.parseFunctionLiteral)
 
+	p.registerPrefix(token.LBRACKET, p.parseArrayLiteral)
 	p.registerPrefix(token.BANG, p.parsePrefixExpression)
 	p.registerPrefix(token.MINUS, p.parsePrefixExpression)
 	p.registerPrefix(token.LPAREN, p.parseGroupingExpression)

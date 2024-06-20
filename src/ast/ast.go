@@ -121,7 +121,7 @@ func (s *BlockStatement) String() string {
 	return out.String()
 }
 
-//
+// Literals
 
 type Identifier struct {
 	Token token.Token // The 'Return' token
@@ -159,6 +159,28 @@ func (l *Boolean) expressionNode()      {}
 func (l *Boolean) TokenLiteral() string { return l.Token.Literal }
 func (l *Boolean) String() string       { return l.Token.Literal }
 
+type ArrayLiteral struct {
+	Token      token.Token // The '[' token
+	Elements []Expression
+}
+
+func (l *ArrayLiteral) expressionNode()      {}
+func (l *ArrayLiteral) TokenLiteral() string { return l.Token.Literal }
+func (l *ArrayLiteral) String() string {
+	var out bytes.Buffer
+
+	elements := []string{}
+	for _, p := range l.Elements {
+		elements = append(elements, p.String())
+	}
+
+	out.WriteString("[")
+	out.WriteString(strings.Join(elements, ", "))
+	out.WriteString("]")
+
+	return out.String()
+}
+
 type FunctionLiteral struct {
 	Token      token.Token // The 'fn' token
 	Parameters []*Identifier
@@ -181,8 +203,11 @@ func (l *FunctionLiteral) String() string {
 	out.WriteString(")")
 	out.WriteString(l.Body.String())
 
+	// ERROR: Return out
 	return l.Token.Literal
 }
+
+// Expressions
 
 type CallExpression struct {
 	Token     token.Token // The '(' token
