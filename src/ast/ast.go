@@ -203,8 +203,7 @@ func (l *FunctionLiteral) String() string {
 	out.WriteString(")")
 	out.WriteString(l.Body.String())
 
-	// ERROR: Return out
-	return l.Token.Literal
+	return out.String() 
 }
 
 // Expressions
