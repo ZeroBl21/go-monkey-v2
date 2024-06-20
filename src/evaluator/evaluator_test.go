@@ -320,6 +320,14 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len("hello world")`, 11},
 		{`len(1)`, "argument to `len` not supported, got=INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
+
+		{`unicodeLen("")`, 0},
+		{`unicodeLen(" ")`, 1},
+		{`unicodeLen("😃")`, 4},
+		{`unicodeLen("four")`, 4},
+		{`unicodeLen("👨‍👩‍👧‍👦")`, 25},
+		{`unicodeLen(1)`, "argument to `unicodeLen` not supported, got=INTEGER"},
+		{`unicodeLen("one", "two")`, "wrong number of arguments. got=2, want=1"},
 	}
 
 	for _, tt := range tests {
