@@ -401,7 +401,6 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len([])`, 0},
 		{`len([1, 2, 3])`, 3},
 		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
-		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
 
 		{`last([])`, NULL},
 		{`last([0])`, 0},
