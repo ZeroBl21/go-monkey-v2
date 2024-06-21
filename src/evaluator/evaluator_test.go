@@ -398,6 +398,11 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`len(1)`, "argument to `len` not supported, got=INTEGER"},
 		{`len("one", "two")`, "wrong number of arguments. got=2, want=1"},
 
+		{`len([])`, 0},
+		{`len([1, 2, 3])`, 3},
+		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
+		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
+
 		{`unicodeLen("")`, 0},
 		{`unicodeLen(" ")`, 1},
 		{`unicodeLen("😃")`, 4},
