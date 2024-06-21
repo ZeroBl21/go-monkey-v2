@@ -403,6 +403,13 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
 		{`let myArray = [1, 2, 3, 4]; len(myArray)`, 4},
 
+		{`last([])`, NULL},
+		{`last([0])`, 0},
+		{`last([1, 2, 3])`, 3},
+		{`let myArray = [4, 3, 2, 1]; last(myArray)`, 1},
+		{`last(1)`, "argument to `last` must be ARRAY, got=INTEGER"},
+		{`last([1, 2], [3, 4])`, "wrong number of arguments. got=2, want=1"},
+
 		{`unicodeLen("")`, 0},
 		{`unicodeLen(" ")`, 1},
 		{`unicodeLen("😃")`, 4},
