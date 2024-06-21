@@ -38,4 +38,5 @@ func (p *Parser) createTokenHandlers() {
 	p.registerInfix(token.RT, p.parseInfixExpression)
 
 	p.registerInfix(token.LPAREN, p.parseCallExpression)
+	p.registerInfix(token.LBRACKET, p.parseIndexExpression)
 }
