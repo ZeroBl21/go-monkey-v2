@@ -48,6 +48,9 @@ func (l *Lexer) NextToken() token.Token {
 	var tok token.Token
 
 	l.skipWhitespace()
+	if l.ch == '/' && l.peekChar() == '/' {
+		l.skipComment()
+	}
 
 	switch l.ch {
 
@@ -147,6 +150,13 @@ func (l *Lexer) skipWhitespace() {
 	for l.ch == ' ' || l.ch == '\t' || l.ch == '\n' || l.ch == '\r' {
 		l.readChar()
 	}
+}
+
+func (l *Lexer) skipComment() {
+	for l.ch != '\n' || l.ch == 0 {
+		l.readChar()
+	}
+	l.skipWhitespace()
 }
 
 func (l *Lexer) readIdentifier() string {

@@ -30,6 +30,7 @@ func TestNextToken(t *testing.T) {
 	10 != 9;
 	"foobar"
 	"foo bar"
+	// This is not tokenized by the lexer
 	[1, 2];
 	`
 
