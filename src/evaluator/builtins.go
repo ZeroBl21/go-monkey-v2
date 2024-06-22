@@ -66,6 +66,24 @@ func _lastFn(args ...object.Object) object.Object {
 	return NULL
 }
 
+// Return the first element of the given array.
+func _firstFn(args ...object.Object) object.Object {
+	if len(args) != 1 {
+		return newError("wrong number of arguments. got=%d, want=1",
+			len(args))
+	}
+	if args[0].Type() != object.ARRAY_OBJ {
+		return newError("argument to `first` must be ARRAY, got=%s", args[0].Type())
+	}
+
+	arr := args[0].(*object.Array)
+	if len(arr.Elements) > 0 {
+		return arr.Elements[0]
+	}
+
+	return NULL
+}
+
 func _restFn(args ...object.Object) object.Object {
 	if len(args) != 1 {
 		return newError("wrong number of arguments. got=%d, want=1",
@@ -112,6 +130,7 @@ func _pushFn(args ...object.Object) object.Object {
 func init() {
 	RegisterBuiltin("len", _lenFn)
 	RegisterBuiltin("unicodeLen", _unicodeLenFn)
+	RegisterBuiltin("first", _firstFn)
 	RegisterBuiltin("last", _lastFn)
 	RegisterBuiltin("rest", _restFn)
 	RegisterBuiltin("push", _pushFn)
