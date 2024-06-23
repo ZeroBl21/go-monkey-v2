@@ -3,6 +3,7 @@ package object
 import (
 	"bytes"
 	"fmt"
+	"hash/fnv"
 	"strings"
 
 	"github.com/ZeroBl21/go-monkey/src/ast"
@@ -27,6 +28,11 @@ type Object interface {
 	Inspect() string
 }
 
+type HashKey struct {
+	Type  ObjectType
+	Value uint64
+}
+
 type Null struct {
 	Value bool
 }
@@ -40,6 +46,12 @@ type Integer struct {
 
 func (o *Integer) Type() ObjectType { return INTEGER_OBJ }
 func (o *Integer) Inspect() string  { return fmt.Sprintf("%d", o.Value) }
+func (o *Integer) HashKey() HashKey {
+	return HashKey{
+		Type:  o.Type(),
+		Value: uint64(o.Value),
+	}
+}
 
 type String struct {
 	Value string
@@ -47,6 +59,15 @@ type String struct {
 
 func (o *String) Type() ObjectType { return STRING_OBJ }
 func (o *String) Inspect() string  { return o.Value }
+func (o *String) HashKey() HashKey {
+	h := fnv.New64a()
+	h.Write([]byte(o.Value))
+
+	return HashKey{
+		Type:  o.Type(),
+		Value: h.Sum64(),
+	}
+}
 
 type Boolean struct {
 	Value bool
@@ -54,6 +75,20 @@ type Boolean struct {
 
 func (o *Boolean) Type() ObjectType { return BOOLEAN_OBJ }
 func (o *Boolean) Inspect() string  { return fmt.Sprintf("%t", o.Value) }
+func (o *Boolean) HashKey() HashKey {
+	var value uint64
+
+	if o.Value {
+		value = 1
+	} else {
+		value = 0
+	}
+
+	return HashKey{
+		Type:  o.Type(),
+		Value: value,
+	}
+}
 
 type ReturnValue struct {
 	Value Object
