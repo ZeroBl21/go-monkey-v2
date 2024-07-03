@@ -1,6 +1,7 @@
 package evaluator
 
 import (
+	"fmt"
 	"unicode/utf8"
 
 	"github.com/ZeroBl21/go-monkey/src/object"
@@ -127,6 +128,14 @@ func _pushFn(args ...object.Object) object.Object {
 	return &object.Array{Elements: newElements}
 }
 
+func _putsFn(args ...object.Object) object.Object {
+	for _, arg := range args {
+		fmt.Println(arg.Inspect())
+	}
+
+	return NULL
+}
+
 func init() {
 	RegisterBuiltin("len", _lenFn)
 	RegisterBuiltin("unicodeLen", _unicodeLenFn)
@@ -134,4 +143,5 @@ func init() {
 	RegisterBuiltin("last", _lastFn)
 	RegisterBuiltin("rest", _restFn)
 	RegisterBuiltin("push", _pushFn)
+	RegisterBuiltin("puts", _putsFn)
 }
