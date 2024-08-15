@@ -934,7 +934,13 @@ func testIdentifier(t *testing.T, exp ast.Expression, value string) bool {
 	return true
 }
 
-func testInfixExpression(t *testing.T, exp ast.Expression, left any, operator string, right any) bool {
+func testInfixExpression(
+	t *testing.T,
+	exp ast.Expression,
+	left any,
+	operator string,
+	right any,
+) bool {
 	t.Helper()
 
 	opExp, ok := exp.(*ast.InfixExpression)

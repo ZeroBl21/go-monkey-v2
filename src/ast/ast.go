@@ -182,7 +182,7 @@ func (l *ArrayLiteral) String() string {
 }
 
 type HashLiteral struct {
-	Token    token.Token // The '{' token
+	Token token.Token // The '{' token
 	Pairs map[Expression]Expression
 }
 
