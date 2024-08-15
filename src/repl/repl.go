@@ -97,8 +97,8 @@ func (r *REPL) EvaluateLineCompiled(line string) {
 		fmt.Fprintf(r.out, "Woops! Executing bytecode failed:\n %s\n", err)
 	}
 
-	stackTop := machine.StackTop()
-	io.WriteString(r.out, applyColor(YELLOW, stackTop.Inspect()))
+	lastPopped := machine.LastPoppedStackElem()
+	io.WriteString(r.out, applyColor(YELLOW, lastPopped.Inspect()))
 	io.WriteString(r.out, "\n")
 }
 
