@@ -36,6 +36,15 @@ func TestIntegerArithmetic(t *testing.T) {
 	runVmTest(t, tests)
 }
 
+func TestBooleanExpressions(t *testing.T) {
+	tests := []vmTestCase{
+		{"true", true},
+		{"false", false},
+	}
+
+	runVmTest(t, tests)
+}
+
 func runVmTest(t *testing.T, tests []vmTestCase) {
 	t.Helper()
 
@@ -66,14 +75,27 @@ func testExpectedObject(t *testing.T, expected any, actual object.Object) {
 		if err := testIntegerObject(int64(expected), actual); err != nil {
 			t.Errorf("testIntegerObject failed: %s", err)
 		}
+
+	case bool:
+		if err := testBooleanObject(bool(expected), actual); err != nil {
+			t.Errorf("testBooleanObject failed: %s", err)
+		}
 	}
 }
 
-func parse(input string) *ast.Program {
-	l := lexer.New(input)
-	p := parser.New(l)
+func testBooleanObject(expected bool, actual object.Object) error {
+	result, ok := actual.(*object.Boolean)
+	if !ok {
+		return fmt.Errorf("object is not Integer. got=%T (%+v)",
+			actual, actual)
+	}
 
-	return p.ParseProgram()
+	if result.Value != expected {
+		return fmt.Errorf("object has wrong value. got=%t, want=%t",
+			result.Value, expected)
+	}
+
+	return nil
 }
 
 func testIntegerObject(expected int64, actual object.Object) error {
@@ -89,4 +111,11 @@ func testIntegerObject(expected int64, actual object.Object) error {
 	}
 
 	return nil
+}
+
+func parse(input string) *ast.Program {
+	l := lexer.New(input)
+	p := parser.New(l)
+
+	return p.ParseProgram()
 }

@@ -10,6 +10,9 @@ import (
 
 const StackSize = 2048
 
+var True = &object.Boolean{Value: true}
+var False = &object.Boolean{Value: false}
+
 type VM struct {
 	constants    []object.Object
 	instructions code.Instructions
@@ -56,6 +59,16 @@ func (vm *VM) Run() error {
 
 		case code.OpPop:
 			vm.pop()
+
+		case code.OpTrue:
+			if err := vm.push(True); err != nil {
+				return err
+			}
+
+		case code.OpFalse:
+			if err := vm.push(False); err != nil {
+				return err
+			}
 
 		default:
 			panic(fmt.Sprintf("unexpected code.Opcode: %#v", op))
