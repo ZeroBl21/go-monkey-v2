@@ -287,7 +287,7 @@ func testConstants(t *testing.T, expected []any, actual []object.Object) error {
 	t.Helper()
 
 	if len(expected) != len(actual) {
-		return fmt.Errorf("wrong instruction length.\nwant=%q\ngot =%q",
+		return fmt.Errorf("wrong instruction length.\nwant=%d\ngot =%d",
 			len(actual), len(expected))
 	}
 
