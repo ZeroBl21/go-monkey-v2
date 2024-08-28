@@ -112,8 +112,8 @@ func (c *Compiler) Compile(node ast.Node) error {
 			return err
 		}
 
-		// Emit an `OpJumpNotTruthy` with a bogus value.
-		opJumpNotTruthy := c.emit(code.OpJumpNotTruthy, 9999)
+		// Emit an `OpJumpNotTruthy` with a bogus value to patch later.
+		jumpNotTruthyPos := c.emit(code.OpJumpNotTruthy, 9999)
 
 		if err := c.Compile(node.Consequence); err != nil {
 			return err
@@ -123,8 +123,27 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.removeLastPop()
 		}
 
-		afterConsequncePos := len(c.instructions)
-		c.changeOperand(opJumpNotTruthy, afterConsequncePos)
+		if node.Alternative.Statements == nil {
+			afterConsequncePos := len(c.instructions)
+			c.changeOperand(jumpNotTruthyPos, afterConsequncePos)
+		} else {
+			// Emit an `OpJump` with a bogus value to patch later.
+			jumpPos := c.emit(code.OpJump, 9999)
+
+			afterConsequncePos := len(c.instructions)
+			c.changeOperand(jumpNotTruthyPos, afterConsequncePos)
+
+			if err := c.Compile(node.Alternative); err != nil {
+				return err
+			}
+
+			if c.lastInstructionIsPop() {
+				c.removeLastPop()
+			}
+
+			afterAlternativePos := len(c.instructions)
+			c.changeOperand(jumpPos, afterAlternativePos)
+		}
 
 	// Literals
 
