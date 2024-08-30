@@ -228,7 +228,7 @@ func TestParsingArrayLiterals(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	array, ok := stmt.Expression.(*ast.ArrayLiteral)
 	if !ok {
 		// TODO: Fix this text
@@ -253,7 +253,7 @@ func TestParsingEmptyHashLiteral(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	hashmap, ok := stmt.Expression.(*ast.HashLiteral)
 	if !ok {
 		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Expression)
@@ -272,7 +272,7 @@ func TestParsingHashLiteral(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	hashmap, ok := stmt.Expression.(*ast.HashLiteral)
 	if !ok {
 		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Expression)
@@ -308,7 +308,7 @@ func TestParsingHashLiteralIntegerKeys(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	hashmap, ok := stmt.Expression.(*ast.HashLiteral)
 	if !ok {
 		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Expression)
@@ -344,7 +344,7 @@ func TestParsingHashLiteralBooleanKeys(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	hashmap, ok := stmt.Expression.(*ast.HashLiteral)
 	if !ok {
 		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Expression)
@@ -379,7 +379,7 @@ func TestParsingHashLiteralWithExpressions(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	hashmap, ok := stmt.Expression.(*ast.HashLiteral)
 	if !ok {
 		t.Fatalf("exp not ast.HashLiteral. got=%T", stmt.Expression)
@@ -542,7 +542,7 @@ func TestParsingIndexExpressions(t *testing.T) {
 	program := p.ParseProgram()
 	checkParserErrors(t, p)
 
-	stmt, ok := program.Statements[0].(*ast.ExpressionStatement)
+	stmt, _ := program.Statements[0].(*ast.ExpressionStatement)
 	indexExp, ok := stmt.Expression.(*ast.IndexExpression)
 	if !ok {
 		t.Fatalf("exp not *ast.IndexExpression. got=%s", stmt.Expression)
