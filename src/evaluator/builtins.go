@@ -97,7 +97,7 @@ func _restFn(args ...object.Object) object.Object {
 	arr := args[0].(*object.Array)
 	length := len(arr.Elements)
 	if length > 0 {
-		newElements := make([]object.Object, length-1, length-1)
+		newElements := make([]object.Object, length-1)
 		copy(newElements, arr.Elements[1:length])
 
 		return &object.Array{
@@ -121,7 +121,7 @@ func _pushFn(args ...object.Object) object.Object {
 	arr := args[0].(*object.Array)
 	length := len(arr.Elements)
 
-	newElements := make([]object.Object, length+1, length+1)
+	newElements := make([]object.Object, length+1)
 	copy(newElements, arr.Elements)
 	newElements[length] = args[1]
 
