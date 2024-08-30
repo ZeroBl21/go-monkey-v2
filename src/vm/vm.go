@@ -168,7 +168,7 @@ func (vm *VM) executeBinaryIntegerOperation(
 	case code.OpDiv:
 		result = leftValue / rightValue
 	default:
-		return fmt.Errorf(fmt.Sprintf("unknown integer operator: %d", op))
+		return fmt.Errorf("unknown integer operator: %d", op)
 	}
 
 	return vm.push(&object.Integer{
