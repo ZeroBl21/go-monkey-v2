@@ -36,7 +36,7 @@ func New(in io.Reader, out io.Writer) *REPL {
 
 func (r *REPL) Start() {
 	for {
-		fmt.Fprintf(r.out, applyColor(BLUE, PROMPT))
+		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
 		scanned := r.scanner.Scan()
 		if !scanned {
 			return
@@ -66,7 +66,7 @@ func (r *REPL) EvaluateLine(line string) {
 
 func (r *REPL) StartCompiled() {
 	for {
-		fmt.Fprintf(r.out, applyColor(BLUE, PROMPT))
+		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
 		scanned := r.scanner.Scan()
 		if !scanned {
 			return
