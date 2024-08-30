@@ -100,7 +100,7 @@ func (vm *VM) Run() error {
 			ip += 2
 
 			condition := vm.pop()
-			if !isThuthy(condition) {
+			if !isTruthy(condition) {
 				ip = pos - 1
 			}
 
@@ -247,7 +247,7 @@ func (vm *VM) executeMinusOperator() error {
 	return vm.push(&object.Integer{Value: -value})
 }
 
-func isThuthy(obj object.Object) bool {
+func isTruthy(obj object.Object) bool {
 	switch obj := obj.(type) {
 
 	case *object.Boolean:
