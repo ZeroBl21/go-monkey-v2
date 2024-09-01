@@ -73,6 +73,8 @@ func (vm *VM) Run() error {
 		case code.OpPop:
 			vm.pop()
 
+		// Literals
+
 		case code.OpTrue:
 			if err := vm.push(True); err != nil {
 				return err
@@ -87,6 +89,19 @@ func (vm *VM) Run() error {
 			if err := vm.push(Null); err != nil {
 				return err
 			}
+
+		case code.OpArray:
+			numElements := int(code.ReadUint16(vm.instructions[ip+1:]))
+			ip += 2
+
+			array := vm.buildArray(vm.sp-numElements, vm.sp)
+			vm.sp = vm.sp - numElements
+
+			if err := vm.push(array); err != nil {
+				return err
+			}
+
+		// Relational
 
 		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan:
 			if err := vm.executeComparison(op); err != nil {
@@ -159,6 +174,16 @@ func (vm *VM) pop() object.Object {
 
 func (vm *VM) LastPoppedStackElem() object.Object {
 	return vm.stack[vm.sp]
+}
+
+func (vm *VM) buildArray(startIndex, endIndex int) object.Object {
+	elements := make([]object.Object, endIndex-startIndex)
+
+	for i := startIndex; i < endIndex; i++ {
+		elements[i-startIndex] = vm.stack[i]
+	}
+
+	return &object.Array{Elements: elements}
 }
 
 func (vm *VM) executeBinaryOperation(op code.Opcode) error {
