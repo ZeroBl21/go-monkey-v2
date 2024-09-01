@@ -9,6 +9,7 @@ import (
 )
 
 const StackSize = 2048
+const GlobalSize = 65_536
 
 var True = &object.Boolean{Value: true}
 var False = &object.Boolean{Value: false}
@@ -21,6 +22,8 @@ type VM struct {
 	stack []object.Object
 	// Stack Pointer Always points to the next free slot. Top of Stack stack[sp-1].
 	sp int
+
+	globals []object.Object
 }
 
 func New(bytecode *compiler.Bytecode) *VM {
@@ -30,6 +33,8 @@ func New(bytecode *compiler.Bytecode) *VM {
 
 		stack: make([]object.Object, StackSize),
 		sp:    0,
+
+		globals: make([]object.Object, GlobalSize),
 	}
 }
 
@@ -104,8 +109,22 @@ func (vm *VM) Run() error {
 				ip = pos - 1
 			}
 
+		case code.OpSetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+			ip += 2
+
+			vm.globals[globalIndex] = vm.pop()
+
+		case code.OpGetGlobal:
+			globalIndex := code.ReadUint16(vm.instructions[ip+1:])
+			ip += 2
+
+			if err := vm.push(vm.globals[globalIndex]); err != nil {
+				return err
+			}
+
 		default:
-			panic(fmt.Sprintf("unexpected code.Opcode: %#v", op))
+			panic(fmt.Sprintf("unexpected code.Opcode: %+v", op))
 		}
 
 	}
