@@ -24,6 +24,10 @@ type REPL struct {
 	env     *object.Environment
 	scanner *bufio.Scanner
 	out     io.Writer
+
+	constants   []object.Object
+	globals     []object.Object
+	symbolTable *compiler.SymbolTable
 }
 
 func New(in io.Reader, out io.Writer) *REPL {
@@ -31,6 +35,13 @@ func New(in io.Reader, out io.Writer) *REPL {
 		env:     object.NewEnvironment(),
 		scanner: bufio.NewScanner(in),
 		out:     out,
+
+		// Compiler
+		constants:   []object.Object{},
+		symbolTable: compiler.NewSymbolTable(),
+
+		// VM
+		globals: make([]object.Object, vm.GlobalSize),
 	}
 }
 
@@ -87,12 +98,15 @@ func (r *REPL) EvaluateLineCompiled(line string) {
 		return
 	}
 
-	comp := compiler.New()
+	comp := compiler.NewWithState(r.symbolTable, r.constants)
 	if err := comp.Compile(program); err != nil {
 		fmt.Fprintf(r.out, "Woops! Compilation failed:\n %s\n", err)
 	}
 
-	machine := vm.New(comp.Bytecode())
+	code := comp.Bytecode()
+	r.constants = code.Constants
+
+	machine := vm.NewWithGlobalStore(code, r.globals)
 	if err := machine.Run(); err != nil {
 		fmt.Fprintf(r.out, "Woops! Executing bytecode failed:\n %s\n", err)
 	}
