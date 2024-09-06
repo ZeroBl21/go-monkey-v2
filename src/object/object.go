@@ -7,21 +7,23 @@ import (
 	"strings"
 
 	"github.com/ZeroBl21/go-monkey/src/ast"
+	"github.com/ZeroBl21/go-monkey/src/code"
 )
 
 type ObjectType string
 
 const (
-	INTEGER_OBJ      ObjectType = "INTEGER"
-	STRING_OBJ       ObjectType = "STRING"
-	BOOLEAN_OBJ      ObjectType = "BOOLEAN"
-	RETURN_VALUE_OBJ ObjectType = "RETURN_VALUE"
-	NULL_OBJ         ObjectType = "NULL"
-	ERROR_OBJ        ObjectType = "ERROR"
-	FUNCTION_OBJ     ObjectType = "FUNCTION"
-	BUILTIN_OBJ      ObjectType = "BUILTIN"
-	ARRAY_OBJ        ObjectType = "ARRAY"
-	HASH_OBJ         ObjectType = "HASH"
+	INTEGER_OBJ           ObjectType = "INTEGER"
+	STRING_OBJ            ObjectType = "STRING"
+	BOOLEAN_OBJ           ObjectType = "BOOLEAN"
+	RETURN_VALUE_OBJ      ObjectType = "RETURN_VALUE"
+	NULL_OBJ              ObjectType = "NULL"
+	ERROR_OBJ             ObjectType = "ERROR"
+	FUNCTION_OBJ          ObjectType = "FUNCTION"
+	BUILTIN_OBJ           ObjectType = "BUILTIN"
+	COMPILED_FUNCTION_OBJ ObjectType = "COMPILED_FUNCTION"
+	ARRAY_OBJ             ObjectType = "ARRAY"
+	HASH_OBJ              ObjectType = "HASH"
 )
 
 type Object interface {
@@ -35,7 +37,7 @@ type HashKey struct {
 }
 
 type Hashable interface {
-	HashKey() HashKey
+	HashKey
 }
 
 type Null struct {
@@ -142,6 +144,15 @@ type Builtin struct {
 
 func (o *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (o *Builtin) Inspect() string  { return "builtin function" }
+
+type CompiledFuction struct {
+	Instructions code.Instructions
+}
+
+func (o *CompiledFuction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
+func (o *CompiledFuction) Inspect() string {
+	return fmt.Sprintf("CompiledFuction[%p]", o)
+}
 
 type Array struct {
 	Elements []Object
