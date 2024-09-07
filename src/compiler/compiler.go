@@ -256,6 +256,10 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.replaceLastPopWithReturn()
 		}
 
+		if !c.lastInstructionIs(code.OpReturnValue) {
+			c.emit(code.OpReturn)
+		}
+
 		instructions := c.leaveScope()
 
 		compiledFn := &object.CompiledFuction{
