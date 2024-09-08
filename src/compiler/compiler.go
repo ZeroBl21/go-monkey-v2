@@ -268,6 +268,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 
 		c.emit(code.OpConstant, c.addConstant(compiledFn))
 
+	case *ast.CallExpression:
+		if err := c.Compile(node.Function); err != nil {
+			return err
+		}
+
+		c.emit(code.OpCall)
+
 	}
 
 	return nil
