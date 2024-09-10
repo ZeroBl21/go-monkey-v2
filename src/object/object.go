@@ -37,7 +37,7 @@ type HashKey struct {
 }
 
 type Hashable interface {
-	HashKey
+	HashKey() HashKey
 }
 
 type Null struct {
