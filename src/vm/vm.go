@@ -156,6 +156,26 @@ func (vm *VM) Run() error {
 				return err
 			}
 
+		// Functions
+		case code.OpCall:
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFuction)
+			if !ok {
+				return fmt.Errorf("calling non-function")
+			}
+
+			frame := NewFrame(fn)
+			vm.pushFrame(frame)
+
+		case code.OpReturnValue:
+			returnValue := vm.pop()
+
+			vm.popFrame()
+			vm.pop()
+
+			if err := vm.push(returnValue); err != nil {
+				return err
+			}
+
 		// Relational
 
 		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan:
