@@ -206,6 +206,21 @@ func TestFunctionsWithoutReturnValue(t *testing.T) {
 	runVmTest(t, tests)
 }
 
+func TestFirstClassFunctions(t *testing.T) {
+	tests := []vmTestCase{
+		{
+			input: `
+			let returnsOne = fn() { 1; };
+			let returnsOneReturner = fn() { returnsOne; };
+			returnsOneReturner()();
+			`,
+			expected: 1,
+		},
+	}
+
+	runVmTest(t, tests)
+}
+
 // Other
 
 func TestConditionals(t *testing.T) {
