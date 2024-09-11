@@ -55,7 +55,7 @@ func TestInstructionsString(t *testing.T) {
 	}
 }
 
-func TestReadOperations(t *testing.T) {
+func TestReadOperands(t *testing.T) {
 	tests := []struct {
 		op        Opcode
 		operants  []int
