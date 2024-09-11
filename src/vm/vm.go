@@ -176,6 +176,14 @@ func (vm *VM) Run() error {
 				return err
 			}
 
+		case code.OpReturn:
+			vm.popFrame()
+			vm.pop()
+
+			if err := vm.push(Null); err != nil {
+				return err
+			}
+
 		// Relational
 
 		case code.OpEqual, code.OpNotEqual, code.OpGreaterThan:
