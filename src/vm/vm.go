@@ -34,7 +34,7 @@ func New(bytecode *compiler.Bytecode) *VM {
 	mainFn := &object.CompiledFuction{
 		Instructions: bytecode.Instructions,
 	}
-	mainFrame := NewFrame(mainFn)
+	mainFrame := NewFrame(mainFn, 0)
 
 	frames := make([]*Frame, MaxFrames)
 	frames[0] = mainFrame
@@ -163,8 +163,9 @@ func (vm *VM) Run() error {
 				return fmt.Errorf("calling non-function")
 			}
 
-			frame := NewFrame(fn)
+			frame := NewFrame(fn, vm.sp)
 			vm.pushFrame(frame)
+			vm.sp = frame.basePointer + fn.NumLocals
 
 		case code.OpReturnValue:
 			returnValue := vm.pop()
@@ -225,6 +226,20 @@ func (vm *VM) Run() error {
 			vm.currentFrame().ip += 2
 
 			if err := vm.push(vm.globals[globalIndex]); err != nil {
+				return err
+			}
+
+		case code.OpSetLocal:
+			localIndex := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
+
+			vm.globals[localIndex] = vm.pop()
+
+		case code.OpGetLocal:
+			localIndex := code.ReadUint16(ins[ip+1:])
+			vm.currentFrame().ip += 2
+
+			if err := vm.push(vm.globals[localIndex]); err != nil {
 				return err
 			}
 
