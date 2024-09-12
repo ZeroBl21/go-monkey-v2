@@ -629,7 +629,7 @@ func TestLetStatementScopes(t *testing.T) {
 			},
 			expectedInstructions: []code.Instructions{
 				code.Make(code.OpConstant, 0),
-				code.Make(code.OpSetGlobal, 25),
+				code.Make(code.OpSetGlobal, 0),
 				code.Make(code.OpConstant, 1),
 				code.Make(code.OpPop),
 			},
@@ -646,7 +646,7 @@ func TestLetStatementScopes(t *testing.T) {
 				[]code.Instructions{
 					code.Make(code.OpConstant, 0),
 					code.Make(code.OpSetLocal, 0),
-					code.Make(code.OpGetGlobal, 0),
+					code.Make(code.OpGetLocal, 0),
 					code.Make(code.OpReturnValue),
 				},
 			},
