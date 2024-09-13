@@ -272,7 +272,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 		numLocals := c.symbolTable.numDefinitions
 		instructions := c.leaveScope()
 
-		compiledFn := &object.CompiledFuction{
+		compiledFn := &object.CompiledFunction{
 			Instructions: instructions,
 			NumLocals:    numLocals,
 		}

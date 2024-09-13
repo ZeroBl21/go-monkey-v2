@@ -31,7 +31,7 @@ type VM struct {
 const MaxFrames = 1024
 
 func New(bytecode *compiler.Bytecode) *VM {
-	mainFn := &object.CompiledFuction{
+	mainFn := &object.CompiledFunction{
 		Instructions: bytecode.Instructions,
 	}
 	mainFrame := NewFrame(mainFn, 0)
@@ -158,7 +158,7 @@ func (vm *VM) Run() error {
 
 		// Functions
 		case code.OpCall:
-			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFuction)
+			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
 			if !ok {
 				return fmt.Errorf("calling non-function")
 			}
@@ -170,16 +170,16 @@ func (vm *VM) Run() error {
 		case code.OpReturnValue:
 			returnValue := vm.pop()
 
-			vm.popFrame()
-			vm.pop()
+			frame := vm.popFrame()
+			vm.sp = frame.basePointer - 1
 
 			if err := vm.push(returnValue); err != nil {
 				return err
 			}
 
 		case code.OpReturn:
-			vm.popFrame()
-			vm.pop()
+			frame := vm.popFrame()
+			vm.sp = frame.basePointer - 1
 
 			if err := vm.push(Null); err != nil {
 				return err
@@ -230,16 +230,21 @@ func (vm *VM) Run() error {
 			}
 
 		case code.OpSetLocal:
-			localIndex := code.ReadUint16(ins[ip+1:])
-			vm.currentFrame().ip += 2
+			localIndex := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1
 
-			vm.globals[localIndex] = vm.pop()
+			frame := vm.currentFrame()
+
+			vm.stack[frame.basePointer+int(localIndex)] = vm.pop()
 
 		case code.OpGetLocal:
-			localIndex := code.ReadUint16(ins[ip+1:])
-			vm.currentFrame().ip += 2
+			localIndex := code.ReadUint8(ins[ip+1:])
+			vm.currentFrame().ip += 1
 
-			if err := vm.push(vm.globals[localIndex]); err != nil {
+			frame := vm.currentFrame()
+
+			err := vm.push(vm.stack[frame.basePointer+int(localIndex)])
+			if err != nil {
 				return err
 			}
 

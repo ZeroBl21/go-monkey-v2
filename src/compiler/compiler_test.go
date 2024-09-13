@@ -773,7 +773,7 @@ func testConstants(t *testing.T, expected []any, actual []object.Object) error {
 			}
 
 		case []code.Instructions:
-			fn, ok := actual[i].(*object.CompiledFuction)
+			fn, ok := actual[i].(*object.CompiledFunction)
 			if !ok {
 				return fmt.Errorf("constant %d - not a function: %T", i, actual[i])
 			}

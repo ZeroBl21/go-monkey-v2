@@ -145,13 +145,13 @@ type Builtin struct {
 func (o *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (o *Builtin) Inspect() string  { return "builtin function" }
 
-type CompiledFuction struct {
+type CompiledFunction struct {
 	Instructions code.Instructions
 	NumLocals    int
 }
 
-func (o *CompiledFuction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
-func (o *CompiledFuction) Inspect() string {
+func (o *CompiledFunction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
+func (o *CompiledFunction) Inspect() string {
 	return fmt.Sprintf("CompiledFuction[%p]", o)
 }
 

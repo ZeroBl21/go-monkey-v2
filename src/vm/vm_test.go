@@ -37,7 +37,7 @@ func TestIntegerArithmetic(t *testing.T) {
 		{"(5 + 10 * 2 + 15 / 3) * 2 + -10", 50},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestStringExpressions(t *testing.T) {
@@ -47,7 +47,7 @@ func TestStringExpressions(t *testing.T) {
 		{`"mon" + "key" + " banana"`, "monkey banana"},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestBooleanExpressions(t *testing.T) {
@@ -79,7 +79,7 @@ func TestBooleanExpressions(t *testing.T) {
 		{"!(if (false) { 5; })", true},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestArrayLiterals(t *testing.T) {
@@ -89,7 +89,7 @@ func TestArrayLiterals(t *testing.T) {
 		{"[1 + 2, 3 * 4, 5 + 6]", []int{3, 12, 11}},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestHashLiterals(t *testing.T) {
@@ -111,7 +111,7 @@ func TestHashLiterals(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestIndexExpressions(t *testing.T) {
@@ -128,7 +128,7 @@ func TestIndexExpressions(t *testing.T) {
 		{"{}[0]", Null},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestCallingFunctionsWithoutArguments(t *testing.T) {
@@ -159,10 +159,10 @@ func TestCallingFunctionsWithoutArguments(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
-func TestCallingFunctionsWithBidings(t *testing.T) {
+func TestCallingFunctionsWithBindings(t *testing.T) {
 	tests := []vmTestCase{
 		{
 			input: `
@@ -215,7 +215,7 @@ func TestCallingFunctionsWithBidings(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestFunctionsWithReturnStatement(t *testing.T) {
@@ -236,7 +236,7 @@ func TestFunctionsWithReturnStatement(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestFunctionsWithoutReturnValue(t *testing.T) {
@@ -259,7 +259,7 @@ func TestFunctionsWithoutReturnValue(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestFirstClassFunctions(t *testing.T) {
@@ -274,7 +274,7 @@ func TestFirstClassFunctions(t *testing.T) {
 		},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 // Other
@@ -293,7 +293,7 @@ func TestConditionals(t *testing.T) {
 		{"if ((if (false) { 10 })) { 10 } else { 20 }", 20},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 func TestGlobalLetStatements(t *testing.T) {
@@ -303,12 +303,12 @@ func TestGlobalLetStatements(t *testing.T) {
 		{"let one = 1; let two = one + one; one + two;", 3},
 	}
 
-	runVmTest(t, tests)
+	runVmTests(t, tests)
 }
 
 // Helpers
 
-func runVmTest(t *testing.T, tests []vmTestCase) {
+func runVmTests(t *testing.T, tests []vmTestCase) {
 	t.Helper()
 
 	for _, tt := range tests {
@@ -433,7 +433,7 @@ func testStringObject(expected string, actual object.Object) error {
 func testBooleanObject(expected bool, actual object.Object) error {
 	result, ok := actual.(*object.Boolean)
 	if !ok {
-		return fmt.Errorf("object is not Integer. got=%T (%+v)",
+		return fmt.Errorf("object is not Boolean. got=%T (%+v)",
 			actual, actual)
 	}
 
