@@ -102,6 +102,19 @@ func (r *REPL) StartLexer() {
 	}
 }
 
+func (r *REPL) StartParser() {
+	for {
+		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
+		scanned := r.scanner.Scan()
+		if !scanned {
+			return
+		}
+
+		line := r.scanner.Text()
+		r.ShowPrecedence(line)
+	}
+}
+
 func (r *REPL) EvaluateLineCompiled(line string) {
 	l := lexer.New(line)
 	p := parser.New(l)
@@ -148,4 +161,18 @@ func (r *REPL) PrintTokens(line string) {
 
 func applyColor(color, text string) string {
 	return color + text + RESET
+}
+
+func (r *REPL) ShowPrecedence(line string) {
+	l := lexer.New(line)
+	p := parser.New(l)
+
+	program := p.ParseProgram()
+	if len(p.Errors()) != 0 {
+		r.printParserErrors(p.Errors())
+		return
+	}
+
+	io.WriteString(r.out, program.String())
+	io.WriteString(r.out, "\n")
 }

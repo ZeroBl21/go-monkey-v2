@@ -14,6 +14,11 @@ func main() {
 	fileFlag := flag.String("file", "", "Path to a file to be evaluated")
 	compileFlag := flag.Bool("compile", false, "Enable compilation mode")
 	lexerFlag := flag.Bool("lexer", false, "Enable lexer mode to print tokens")
+	precedenceFlag := flag.Bool(
+		"precedence",
+		false,
+		"Enable precedence mode to show parsed program",
+	)
 	flag.Parse()
 
 	if *fileFlag != "" {
@@ -47,6 +52,8 @@ func main() {
 		replInstance.StartCompiled()
 	} else if *lexerFlag {
 		replInstance.StartLexer()
+	} else if *precedenceFlag {
+		replInstance.StartParser()
 	} else {
 		replInstance.Start()
 	}
