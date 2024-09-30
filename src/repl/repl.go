@@ -10,6 +10,7 @@ import (
 	"github.com/ZeroBl21/go-monkey/src/lexer"
 	"github.com/ZeroBl21/go-monkey/src/object"
 	"github.com/ZeroBl21/go-monkey/src/parser"
+	"github.com/ZeroBl21/go-monkey/src/token"
 	"github.com/ZeroBl21/go-monkey/src/vm"
 )
 
@@ -88,6 +89,19 @@ func (r *REPL) StartCompiled() {
 	}
 }
 
+func (r *REPL) StartLexer() {
+	for {
+		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
+		scanned := r.scanner.Scan()
+		if !scanned {
+			return
+		}
+
+		line := r.scanner.Text()
+		r.PrintTokens(line)
+	}
+}
+
 func (r *REPL) EvaluateLineCompiled(line string) {
 	l := lexer.New(line)
 	p := parser.New(l)
@@ -121,6 +135,14 @@ func (r *REPL) printParserErrors(errors []string) {
 	io.WriteString(r.out, " parser errors:\n")
 	for _, msg := range errors {
 		io.WriteString(r.out, "\t"+msg+"\n")
+	}
+}
+
+func (r *REPL) PrintTokens(line string) {
+	l := lexer.New(line)
+
+	for tok := l.NextToken(); tok.Type != token.EOF; tok = l.NextToken() {
+		fmt.Fprintf(r.out, "%+v\n", tok)
 	}
 }
 

@@ -10,8 +10,10 @@ import (
 )
 
 func main() {
+	// TODO: Refactor this into a bit flags in REPL struct
 	fileFlag := flag.String("file", "", "Path to a file to be evaluated")
 	compileFlag := flag.Bool("compile", false, "Enable compilation mode")
+	lexerFlag := flag.Bool("lexer", false, "Enable lexer mode to print tokens")
 	flag.Parse()
 
 	if *fileFlag != "" {
@@ -40,8 +42,11 @@ func main() {
 	fmt.Printf("Feel free too type in commands\n")
 
 	replInstance := repl.New(os.Stdin, os.Stdout)
+	// TODO: Make only only one "Start" function
 	if *compileFlag {
 		replInstance.StartCompiled()
+	} else if *lexerFlag {
+		replInstance.StartLexer()
 	} else {
 		replInstance.Start()
 	}
