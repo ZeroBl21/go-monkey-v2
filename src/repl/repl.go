@@ -21,6 +21,12 @@ const (
 	PROMPT = ">> "
 )
 
+const (
+	CompileFlag = 1 << iota
+	LexerFlag
+	PrecedenceFlag
+)
+
 type REPL struct {
 	env     *object.Environment
 	scanner *bufio.Scanner
@@ -29,6 +35,8 @@ type REPL struct {
 	constants   []object.Object
 	globals     []object.Object
 	symbolTable *compiler.SymbolTable
+
+	flags int
 }
 
 func New(in io.Reader, out io.Writer) *REPL {
@@ -46,6 +54,10 @@ func New(in io.Reader, out io.Writer) *REPL {
 	}
 }
 
+func (r *REPL) SetFlags(flags int) {
+	r.flags |= flags
+}
+
 func (r *REPL) Start() {
 	for {
 		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
@@ -55,6 +67,19 @@ func (r *REPL) Start() {
 		}
 
 		line := r.scanner.Text()
+		r.Execute(line)
+	}
+}
+
+func (r *REPL) Execute(line string) {
+	switch {
+	case r.flags&CompileFlag != 0:
+		r.EvaluateLineCompiled(line)
+	case r.flags&LexerFlag != 0:
+		r.PrintTokens(line)
+	case r.flags&PrecedenceFlag != 0:
+		r.ShowPrecedence(line)
+	default:
 		r.EvaluateLine(line)
 	}
 }
@@ -73,45 +98,6 @@ func (r *REPL) EvaluateLine(line string) {
 	if evaluated != nil {
 		io.WriteString(r.out, applyColor(YELLOW, evaluated.Inspect()))
 		io.WriteString(r.out, "\n")
-	}
-}
-
-func (r *REPL) StartCompiled() {
-	for {
-		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
-		scanned := r.scanner.Scan()
-		if !scanned {
-			return
-		}
-
-		line := r.scanner.Text()
-		r.EvaluateLineCompiled(line)
-	}
-}
-
-func (r *REPL) StartLexer() {
-	for {
-		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
-		scanned := r.scanner.Scan()
-		if !scanned {
-			return
-		}
-
-		line := r.scanner.Text()
-		r.PrintTokens(line)
-	}
-}
-
-func (r *REPL) StartParser() {
-	for {
-		fmt.Fprint(r.out, applyColor(BLUE, PROMPT))
-		scanned := r.scanner.Scan()
-		if !scanned {
-			return
-		}
-
-		line := r.scanner.Text()
-		r.ShowPrecedence(line)
 	}
 }
 

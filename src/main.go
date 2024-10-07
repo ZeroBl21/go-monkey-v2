@@ -10,7 +10,6 @@ import (
 )
 
 func main() {
-	// TODO: Refactor this into a bit flags in REPL struct
 	fileFlag := flag.String("file", "", "Path to a file to be evaluated")
 	compileFlag := flag.Bool("compile", false, "Enable compilation mode")
 	lexerFlag := flag.Bool("lexer", false, "Enable lexer mode to print tokens")
@@ -21,6 +20,22 @@ func main() {
 	)
 	flag.Parse()
 
+	replFlagsMap := map[bool]int{
+		*compileFlag:    repl.CompileFlag,
+		*lexerFlag:      repl.LexerFlag,
+		*precedenceFlag: repl.PrecedenceFlag,
+	}
+
+	flags := 0
+	for condition, flag := range replFlagsMap {
+		if condition {
+			flags |= flag
+		}
+	}
+
+	replInstance := repl.New(os.Stdin, os.Stdout)
+	replInstance.SetFlags(flags)
+
 	if *fileFlag != "" {
 		data, err := os.ReadFile(*fileFlag)
 		if err != nil {
@@ -28,7 +43,6 @@ func main() {
 			return
 		}
 
-		replInstance := repl.New(os.Stdin, os.Stdout)
 		if *compileFlag {
 			replInstance.EvaluateLineCompiled(string(data))
 		} else {
@@ -46,15 +60,5 @@ func main() {
 	fmt.Printf("Hello %s! This is the Monkey programming language!\n", user.Username)
 	fmt.Printf("Feel free too type in commands\n")
 
-	replInstance := repl.New(os.Stdin, os.Stdout)
-	// TODO: Make only only one "Start" function
-	if *compileFlag {
-		replInstance.StartCompiled()
-	} else if *lexerFlag {
-		replInstance.StartLexer()
-	} else if *precedenceFlag {
-		replInstance.StartParser()
-	} else {
-		replInstance.Start()
-	}
+	replInstance.Start()
 }
