@@ -55,7 +55,10 @@ func _lastFn(args ...object.Object) object.Object {
 			len(args))
 	}
 	if args[0].Type() != object.ARRAY_OBJ {
-		return newError("argument to `last` must be ARRAY, got=%s", args[0].Type())
+		return newError(
+			"argument to `last` must be ARRAY, got=%s",
+			args[0].Type(),
+		)
 	}
 
 	arr := args[0].(*object.Array)
@@ -74,7 +77,10 @@ func _firstFn(args ...object.Object) object.Object {
 			len(args))
 	}
 	if args[0].Type() != object.ARRAY_OBJ {
-		return newError("argument to `first` must be ARRAY, got=%s", args[0].Type())
+		return newError(
+			"argument to `first` must be ARRAY, got=%s",
+			args[0].Type(),
+		)
 	}
 
 	arr := args[0].(*object.Array)
@@ -91,7 +97,10 @@ func _restFn(args ...object.Object) object.Object {
 			len(args))
 	}
 	if args[0].Type() != object.ARRAY_OBJ {
-		return newError("argument to `rest` must be ARRAY, got=%s", args[0].Type())
+		return newError(
+			"argument to `rest` must be ARRAY, got=%s",
+			args[0].Type(),
+		)
 	}
 
 	arr := args[0].(*object.Array)

@@ -80,7 +80,11 @@ func TestReadOperands(t *testing.T) {
 
 		for i, want := range tt.operants {
 			if operantsRead[i] != want {
-				t.Errorf("operand wrong. want=%d, got=%d", want, operantsRead[i])
+				t.Errorf(
+					"operand wrong. want=%d, got=%d",
+					want,
+					operantsRead[i],
+				)
 			}
 		}
 	}

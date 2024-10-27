@@ -386,7 +386,11 @@ func (vm *VM) executeBinaryOperation(op code.Opcode) error {
 		return vm.executeBinaryStringOperation(op, left, right)
 
 	default:
-		return fmt.Errorf("unsupported types for binary operation: %s %s", leftType, rightType)
+		return fmt.Errorf(
+			"unsupported types for binary operation: %s %s",
+			leftType,
+			rightType,
+		)
 	}
 }
 
@@ -452,7 +456,12 @@ func (vm *VM) executeComparison(op code.Opcode) error {
 	case code.OpNotEqual:
 		return vm.push(nativeBoolToBooleanObject(right != left))
 	default:
-		return fmt.Errorf("unknown operator: %d (%s %s)", op, left.Type(), right.Type())
+		return fmt.Errorf(
+			"unknown operator: %d (%s %s)",
+			op,
+			left.Type(),
+			right.Type(),
+		)
 	}
 }
 

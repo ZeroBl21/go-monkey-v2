@@ -138,7 +138,10 @@ func TestArrayLiteral(t *testing.T) {
 	}
 
 	if len(result.Elements) != 3 {
-		t.Fatalf("array has wrong number of elemnents. got=%d", len(result.Elements))
+		t.Fatalf(
+			"array has wrong number of elemnents. got=%d",
+			len(result.Elements),
+		)
 	}
 
 	testIntegerObject(t, result.Elements[0], 1)
@@ -390,7 +393,11 @@ func TestErrorHandling(t *testing.T) {
 
 		errObj, ok := evaluated.(*object.Error)
 		if !ok {
-			t.Errorf("no error object returned. gott=%T(%+v)", evaluated, evaluated)
+			t.Errorf(
+				"no error object returned. gott=%T(%+v)",
+				evaluated,
+				evaluated,
+			)
 			continue
 		}
 
@@ -436,7 +443,11 @@ func TestFunctionObject(t *testing.T) {
 
 	expectedBody := "(x + 2)"
 	if fn.Body.String() != expectedBody {
-		t.Fatalf("function body is not %q. got=%q", expectedBody, fn.Body.String())
+		t.Fatalf(
+			"function body is not %q. got=%q",
+			expectedBody,
+			fn.Body.String(),
+		)
 
 	}
 }
@@ -509,8 +520,14 @@ func TestBuiltinFunctions(t *testing.T) {
 		{`unicodeLen("😃")`, 4},
 		{`unicodeLen("four")`, 4},
 		{`unicodeLen("👨‍👩‍👧‍👦")`, 25},
-		{`unicodeLen(1)`, "argument to `unicodeLen` not supported, got=INTEGER"},
-		{`unicodeLen("one", "two")`, "wrong number of arguments. got=2, want=1"},
+		{
+			`unicodeLen(1)`,
+			"argument to `unicodeLen` not supported, got=INTEGER",
+		},
+		{
+			`unicodeLen("one", "two")`,
+			"wrong number of arguments. got=2, want=1",
+		},
 	}
 
 	for _, tt := range tests {

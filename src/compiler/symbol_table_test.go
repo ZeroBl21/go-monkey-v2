@@ -62,7 +62,12 @@ func TestResolveGlobal(t *testing.T) {
 			continue
 		}
 		if result != sym {
-			t.Errorf("expeceted %s to resolve to %+v, got=%+v", sym.Name, sym, result)
+			t.Errorf(
+				"expeceted %s to resolve to %+v, got=%+v",
+				sym.Name,
+				sym,
+				result,
+			)
 		}
 	}
 }
@@ -115,7 +120,12 @@ func TestResolveLocal(t *testing.T) {
 				continue
 			}
 			if result != sym {
-				t.Errorf("expeceted %s to resolve to %+v, got=%+v", sym.Name, sym, result)
+				t.Errorf(
+					"expeceted %s to resolve to %+v, got=%+v",
+					sym.Name,
+					sym,
+					result,
+				)
 			}
 		}
 	}

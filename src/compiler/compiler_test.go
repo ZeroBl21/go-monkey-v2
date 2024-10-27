@@ -525,7 +525,11 @@ func TestCompilerScopes(t *testing.T) {
 
 	last := compiler.scopes[compiler.scopeIndex].lastInstruction
 	if last.Opcode != code.OpSub {
-		t.Errorf("lastInstruction.Opcode wrong. got=%d, want=%d", last.Opcode, code.OpSub)
+		t.Errorf(
+			"lastInstruction.Opcode wrong. got=%d, want=%d",
+			last.Opcode,
+			code.OpSub,
+		)
 	}
 
 	if compiler.symbolTable.Outer != globalSymbolTable {
@@ -553,7 +557,11 @@ func TestCompilerScopes(t *testing.T) {
 
 	last = compiler.scopes[compiler.scopeIndex].lastInstruction
 	if last.Opcode != code.OpAdd {
-		t.Errorf("lastInstruction.Opcode wrong. got=%d, want=%d", last.Opcode, code.OpAdd)
+		t.Errorf(
+			"lastInstruction.Opcode wrong. got=%d, want=%d",
+			last.Opcode,
+			code.OpAdd,
+		)
 	}
 
 	previous := compiler.scopes[compiler.scopeIndex].previousInstruction
@@ -773,7 +781,10 @@ func parse(input string) *ast.Program {
 	return p.ParseProgram()
 }
 
-func testInstructions(expected []code.Instructions, actual code.Instructions) error {
+func testInstructions(
+	expected []code.Instructions,
+	actual code.Instructions,
+) error {
 	concatted := concatInstructions(expected)
 
 	if len(actual) != len(concatted) {

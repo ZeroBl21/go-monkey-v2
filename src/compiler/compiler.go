@@ -344,7 +344,10 @@ func (c *Compiler) changeOperand(opPos int, operand int) {
 	c.replaceInstruction(opPos, newInstruction)
 }
 
-func (c *Compiler) replaceInstruction(pos int, newInstruction code.Instructions) {
+func (c *Compiler) replaceInstruction(
+	pos int,
+	newInstruction code.Instructions,
+) {
 	ins := c.currentInstructions()
 
 	for i := 0; i < len(newInstruction); i++ {
