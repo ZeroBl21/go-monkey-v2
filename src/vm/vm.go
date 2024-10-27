@@ -8,12 +8,16 @@ import (
 	"github.com/ZeroBl21/go-monkey/src/object"
 )
 
-const StackSize = 2048
-const GlobalSize = 65_536
+const (
+	StackSize  = 2048
+	GlobalSize = 65_536
+)
 
-var True = &object.Boolean{Value: true}
-var False = &object.Boolean{Value: false}
-var Null = &object.Null{}
+var (
+	True  = &object.Boolean{Value: true}
+	False = &object.Boolean{Value: false}
+	Null  = &object.Null{}
+)
 
 type VM struct {
 	constants []object.Object
@@ -158,6 +162,7 @@ func (vm *VM) Run() error {
 
 		// Functions
 		case code.OpCall:
+			vm.currentFrame().ip += 1
 			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
 			if !ok {
 				return fmt.Errorf("calling non-function")
