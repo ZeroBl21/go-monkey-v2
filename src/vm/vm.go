@@ -162,15 +162,12 @@ func (vm *VM) Run() error {
 
 		// Functions
 		case code.OpCall:
+			numArgs := code.ReadUint8(ins[ip+1:])
 			vm.currentFrame().ip += 1
-			fn, ok := vm.stack[vm.sp-1].(*object.CompiledFunction)
-			if !ok {
-				return fmt.Errorf("calling non-function")
-			}
 
-			frame := NewFrame(fn, vm.sp)
-			vm.pushFrame(frame)
-			vm.sp = frame.basePointer + fn.NumLocals
+			if err := vm.callFunction(int(numArgs)); err != nil {
+				return err
+			}
 
 		case code.OpReturnValue:
 			returnValue := vm.pop()
@@ -282,6 +279,20 @@ func (vm *VM) pop() object.Object {
 
 func (vm *VM) LastPoppedStackElem() object.Object {
 	return vm.stack[vm.sp]
+}
+
+func (vm *VM) callFunction(numArgs int) error {
+	fn, ok := vm.stack[vm.sp-1-numArgs].(*object.CompiledFunction)
+	if !ok {
+		return fmt.Errorf("callint non-function")
+	}
+
+	frame := NewFrame(fn, vm.sp-numArgs)
+	vm.pushFrame(frame)
+
+	vm.sp = frame.basePointer + fn.NumLocals
+
+	return nil
 }
 
 func (vm *VM) buildArray(startIndex, endIndex int) object.Object {
