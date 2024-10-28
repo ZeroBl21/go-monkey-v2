@@ -388,8 +388,8 @@ func (c *Compiler) loadSymbol(s Symbol) {
 		c.emit(code.OpGetGlobal, s.Index)
 	case LocalScope:
 		c.emit(code.OpGetLocal, s.Index)
-	case BuilinScope:
-		c.emit(code.OpGetBuilin, s.Index)
+	case BuiltinScope:
+		c.emit(code.OpGetBuiltin, s.Index)
 	default:
 		panic(fmt.Sprintf("unexpected compiler.SymbolScope: %#v", s.Scope))
 	}
