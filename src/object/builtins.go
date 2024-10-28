@@ -11,7 +11,7 @@ type BuiltinsFns struct {
 }
 
 // The built-in functions / standard-library methods are stored here.
-var builtins = []BuiltinsFns{}
+var Builtins = []BuiltinsFns{}
 
 // init registers built-in functions to the "standard library" map.
 func init() {
@@ -28,14 +28,14 @@ func init() {
 
 // RegisterBuiltin registers a built-in function.
 func RegisterBuiltin(name string, fn BuiltinFunction) {
-	builtins = append(builtins, BuiltinsFns{
+	Builtins = append(Builtins, BuiltinsFns{
 		Name:    name,
 		Builtin: &Builtin{Fn: fn},
 	})
 }
 
 func GetBuiltinByName(name string) *Builtin {
-	for _, def := range builtins {
+	for _, def := range Builtins {
 		if def.Name == name {
 			return def.Builtin
 		}
