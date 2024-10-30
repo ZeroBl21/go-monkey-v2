@@ -13,15 +13,16 @@ import (
 type ObjectType string
 
 const (
+	NULL_OBJ              ObjectType = "NULL"
+	ERROR_OBJ             ObjectType = "ERROR"
 	INTEGER_OBJ           ObjectType = "INTEGER"
 	STRING_OBJ            ObjectType = "STRING"
 	BOOLEAN_OBJ           ObjectType = "BOOLEAN"
-	RETURN_VALUE_OBJ      ObjectType = "RETURN_VALUE"
-	NULL_OBJ              ObjectType = "NULL"
-	ERROR_OBJ             ObjectType = "ERROR"
 	FUNCTION_OBJ          ObjectType = "FUNCTION"
 	BUILTIN_OBJ           ObjectType = "BUILTIN"
+	CLOSURE_OBJ           ObjectType = "CLOSURE"
 	COMPILED_FUNCTION_OBJ ObjectType = "COMPILED_FUNCTION"
+	RETURN_VALUE_OBJ      ObjectType = "RETURN_VALUE"
 	ARRAY_OBJ             ObjectType = "ARRAY"
 	HASH_OBJ              ObjectType = "HASH"
 )
@@ -145,6 +146,16 @@ type Builtin struct {
 func (o *Builtin) Type() ObjectType { return BUILTIN_OBJ }
 func (o *Builtin) Inspect() string  { return "builtin function" }
 
+type Closure struct {
+	Fn   *CompiledFunction
+	Free []Object
+}
+
+func (o *Closure) Type() ObjectType { return CLOSURE_OBJ }
+func (o *Closure) Inspect() string {
+	return fmt.Sprintf("Closure[%p]", o)
+}
+
 type CompiledFunction struct {
 	Instructions  code.Instructions
 	NumLocals     int
@@ -153,6 +164,7 @@ type CompiledFunction struct {
 
 func (o *CompiledFunction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
 func (o *CompiledFunction) Inspect() string {
+	// TODO: FIX Typo
 	return fmt.Sprintf("CompiledFuction[%p]", o)
 }
 

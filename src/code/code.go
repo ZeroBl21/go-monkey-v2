@@ -39,13 +39,14 @@ const (
 	OpGetBuiltin
 	OpSetBuiltin
 
+	OpCall
+	OpClosure
+	OpReturnValue
+	OpReturn
+
 	OpArray
 	OpHash
 	OpIndex
-
-	OpCall
-	OpReturnValue
-	OpReturn
 
 	OpNull
 )
@@ -86,13 +87,14 @@ var definitions = map[Opcode]*Definition{
 	OpGetBuiltin: {"OpGetBuiltin", []int{1}},
 	OpSetBuiltin: {"OpSetBuiltin", []int{1}},
 
+	OpCall:        {"OpCall", []int{1}},
+	OpClosure:     {"OpClosure", []int{2, 1}},
+	OpReturnValue: {"OpReturnValue", []int{}},
+	OpReturn:      {"OpReturn", []int{}},
+
 	OpArray: {"OpArray", []int{2}},
 	OpHash:  {"OpHash", []int{2}},
 	OpIndex: {"OpIndex", []int{}},
-
-	OpCall:        {"OpCall", []int{1}},
-	OpReturnValue: {"OpReturnValue", []int{}},
-	OpReturn:      {"OpReturn", []int{}},
 
 	OpNull: {"OpNull", []int{}},
 }
@@ -197,6 +199,8 @@ func (ins Instructions) fmtInstruction(def *Definition, operands []int) string {
 		return def.Name
 	case 1:
 		return fmt.Sprintf("%s %d", def.Name, operands[0])
+	case 2:
+		return fmt.Sprintf("%s %d %d", def.Name, operands[0], operands[1])
 	}
 
 	return fmt.Sprintf("ERROR: unhandled operandCount for %s\n", def.Name)
