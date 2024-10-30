@@ -164,8 +164,7 @@ type CompiledFunction struct {
 
 func (o *CompiledFunction) Type() ObjectType { return COMPILED_FUNCTION_OBJ }
 func (o *CompiledFunction) Inspect() string {
-	// TODO: FIX Typo
-	return fmt.Sprintf("CompiledFuction[%p]", o)
+	return fmt.Sprintf("CompiledFunction[%p]", o)
 }
 
 type Array struct {
