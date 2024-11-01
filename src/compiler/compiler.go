@@ -274,8 +274,13 @@ func (c *Compiler) Compile(node ast.Node) error {
 			c.emit(code.OpReturn)
 		}
 
+		freeSymbols := c.symbolTable.FreeSymbols
 		numLocals := c.symbolTable.numDefinitions
 		instructions := c.leaveScope()
+
+		for _, sym := range freeSymbols {
+			c.loadSymbol(sym)
+		}
 
 		compiledFn := &object.CompiledFunction{
 			Instructions:  instructions,
@@ -284,7 +289,7 @@ func (c *Compiler) Compile(node ast.Node) error {
 		}
 
 		fnIndex := c.addConstant(compiledFn)
-		c.emit(code.OpClosure, fnIndex, 0)
+		c.emit(code.OpClosure, fnIndex, len(freeSymbols))
 
 	case *ast.CallExpression:
 		if err := c.Compile(node.Function); err != nil {
@@ -391,6 +396,8 @@ func (c *Compiler) loadSymbol(s Symbol) {
 		c.emit(code.OpGetLocal, s.Index)
 	case BuiltinScope:
 		c.emit(code.OpGetBuiltin, s.Index)
+	case FreeScope:
+		c.emit(code.OpGetFree, s.Index)
 	default:
 		panic(fmt.Sprintf("unexpected compiler.SymbolScope: %#v", s.Scope))
 	}

@@ -39,6 +39,8 @@ const (
 	OpGetBuiltin
 	OpSetBuiltin
 
+	OpGetFree
+
 	OpCall
 	OpClosure
 	OpReturnValue
@@ -86,6 +88,8 @@ var definitions = map[Opcode]*Definition{
 
 	OpGetBuiltin: {"OpGetBuiltin", []int{1}},
 	OpSetBuiltin: {"OpSetBuiltin", []int{1}},
+
+	OpGetFree: {"OpGetFree", []int{1}},
 
 	OpCall:        {"OpCall", []int{1}},
 	OpClosure:     {"OpClosure", []int{2, 1}},
