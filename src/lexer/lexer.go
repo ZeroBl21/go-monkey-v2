@@ -136,8 +136,14 @@ func (l *Lexer) NextToken() token.Token {
 		}
 
 		if isDigit(l.ch) {
-			tok.Literal = l.readNumber()
-			tok.Type = token.INT
+			digit, err := l.readNumber()
+			if err != nil {
+				tok.Type = token.ILLEGAL
+				tok.Literal = err.Error()
+			} else {
+				tok.Type = token.INT
+				tok.Literal = digit
+			}
 			return tok
 		}
 
@@ -190,14 +196,14 @@ func (l *Lexer) readString() (string, error) {
 	return l.input[position:l.position], nil
 }
 
-func (l *Lexer) readNumber() string {
+func (l *Lexer) readNumber() (string, error) {
 	position := l.position
 	previousCharWasUnderscore := false
 
 	for isDigit(l.ch) {
 		if l.ch == '_' {
 			if previousCharWasUnderscore || l.position == position {
-				break
+				return "", errors.New("invalid number: trailing underscore")
 			}
 			previousCharWasUnderscore = true
 		} else {
@@ -208,10 +214,10 @@ func (l *Lexer) readNumber() string {
 	}
 
 	if previousCharWasUnderscore {
-		l.position--
+		return "", errors.New("invalid number: trailing underscore")
 	}
 
-	return l.input[position:l.position]
+	return l.input[position:l.position], nil
 }
 
 func isDigit(ch byte) bool {

@@ -148,7 +148,7 @@ func TestNextToken(t *testing.T) {
 		{token.SEMICOLON, ";"},
 
 		{token.INT, "10_000_000"},
-		{token.INT, "1000"},
+		{token.ILLEGAL, "invalid number: trailing underscore"},
 		{token.INT, "1_000"},
 		{token.INT, "1_0_0_0"},
 
