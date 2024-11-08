@@ -33,6 +33,10 @@ func TestNextToken(t *testing.T) {
 	// This is not tokenized by the lexer
 	[1, 2];
 	{"foo": "bar"};
+	10_000_000
+	1000_
+	1_000
+	1_0_0_0
 	`
 
 	tests := []struct {
@@ -142,6 +146,11 @@ func TestNextToken(t *testing.T) {
 		{token.STRING, "bar"},
 		{token.RBRACE, "}"},
 		{token.SEMICOLON, ";"},
+
+		{token.INT, "10_000_000"},
+		{token.INT, "1000"},
+		{token.INT, "1_000"},
+		{token.INT, "1_0_0_0"},
 
 		{token.EOF, ""},
 	}

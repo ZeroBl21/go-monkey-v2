@@ -192,15 +192,30 @@ func (l *Lexer) readString() (string, error) {
 
 func (l *Lexer) readNumber() string {
 	position := l.position
+	previousCharWasUnderscore := false
+
 	for isDigit(l.ch) {
+		if l.ch == '_' {
+			if previousCharWasUnderscore || l.position == position {
+				break
+			}
+			previousCharWasUnderscore = true
+		} else {
+			previousCharWasUnderscore = false
+		}
+
 		l.readChar()
+	}
+
+	if previousCharWasUnderscore {
+		l.position--
 	}
 
 	return l.input[position:l.position]
 }
 
 func isDigit(ch byte) bool {
-	return '0' <= ch && ch <= '9'
+	return ('0' <= ch && ch <= '9') || ch == '_'
 }
 
 func newToken(tokenType token.TokenType, ch byte) token.Token {
