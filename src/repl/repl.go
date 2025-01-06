@@ -36,7 +36,7 @@ type REPL struct {
 	globals     []object.Object
 	symbolTable *compiler.SymbolTable
 
-	flags int
+	flags int32
 }
 
 func New(in io.Reader, out io.Writer) *REPL {
@@ -60,7 +60,7 @@ func New(in io.Reader, out io.Writer) *REPL {
 }
 
 func (r *REPL) SetFlags(flags int) {
-	r.flags |= flags
+	r.flags = int32(flags)
 }
 
 func (r *REPL) Start() {
