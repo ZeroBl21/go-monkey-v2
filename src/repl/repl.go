@@ -40,6 +40,11 @@ type REPL struct {
 }
 
 func New(in io.Reader, out io.Writer) *REPL {
+	symbolTable := compiler.NewSymbolTable()
+	for i, v := range object.Builtins {
+		symbolTable.DefineBuiltin(i, v.Name)
+	}
+
 	return &REPL{
 		env:     object.NewEnvironment(),
 		scanner: bufio.NewScanner(in),
@@ -47,7 +52,7 @@ func New(in io.Reader, out io.Writer) *REPL {
 
 		// Compiler
 		constants:   []object.Object{},
-		symbolTable: compiler.NewSymbolTable(),
+		symbolTable: symbolTable,
 
 		// VM
 		globals: make([]object.Object, vm.GlobalSize),
