@@ -119,6 +119,7 @@ func (r *REPL) EvaluateLineCompiled(line string) {
 	comp := compiler.NewWithState(r.symbolTable, r.constants)
 	if err := comp.Compile(program); err != nil {
 		fmt.Fprintf(r.out, "Woops! Compilation failed:\n %s\n", err)
+		return
 	}
 
 	code := comp.Bytecode()
@@ -127,6 +128,7 @@ func (r *REPL) EvaluateLineCompiled(line string) {
 	machine := vm.NewWithGlobalStore(code, r.globals)
 	if err := machine.Run(); err != nil {
 		fmt.Fprintf(r.out, "Woops! Executing bytecode failed:\n %s\n", err)
+		return
 	}
 
 	lastPopped := machine.LastPoppedStackElem()
