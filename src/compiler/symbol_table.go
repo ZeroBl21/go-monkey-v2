@@ -76,7 +76,7 @@ func (s *SymbolTable) Resolve(name string) (Symbol, bool) {
 	symbol, ok := s.store[name]
 
 	if !ok && s.Outer != nil {
-		symbol, ok := s.Outer.Resolve(name)
+		symbol, ok = s.Outer.Resolve(name)
 		if !ok {
 			return symbol, ok
 		}
